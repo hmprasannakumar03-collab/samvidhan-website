@@ -181,7 +181,7 @@ function AshokaChakra({ size = 120, opacity = 0.15, spin = true, color = "#13880
 // ── Main App ──────────────────────────────────────────────────────────────────
 export default function Samvidhan() {
   const [dark, setDark] = useState(true);
-const [lang, setLang] = useState<string>("English");
+const [lang, setLang] = useState<keyof typeof LANGS>("English");
   const [section, setSection] = useState("home");
   const [authMode, setAuthMode] = useState(null); // null | "login" | "signup"
   const [user, setUser] = useState(null);
@@ -196,7 +196,7 @@ const [lang, setLang] = useState<string>("English");
   const [signupForm, setSignupForm] = useState({ name: "", username: "", email: "", password: "", confirm: "" });
   const chatEndRef = useRef(null);
 
-  const T = LANGS[lang] || LANGS["English"];
+  const T = LANGS[lang];
 
   useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [aiMessages]);
 
