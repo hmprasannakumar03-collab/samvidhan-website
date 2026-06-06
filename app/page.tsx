@@ -194,7 +194,7 @@ const [lang, setLang] = useState<keyof typeof LANGS>("English");
   const [expandedArticle, setExpandedArticle] = useState(null);
   const [loginForm, setLoginForm] = useState({ email: "", password: "" });
   const [signupForm, setSignupForm] = useState({ name: "", username: "", email: "", password: "", confirm: "" });
-  const chatEndRef = useRef(null);
+  const chatEndRef = useRef<HTMLDivElement | null>(null);
 
   const T = LANGS[lang];
 
