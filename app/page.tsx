@@ -211,12 +211,12 @@ const [lang, setLang] = useState<keyof typeof LANGS>("English");
 
   const glass = { background: cardBg, border: `1px solid ${border}`, backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)" };
 
-  function handleLogin(e) {
+  function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setUser({ name: loginForm.email.split("@")[0] || "Indian Citizen", email: loginForm.email, xp: 1240, level: 5, streak: 12, badges: ["🏅","🎖️","🥇"], rank: 42 });
     setAuthMode(null); setSection("home");
   }
-  function handleSignup(e) {
+  function handleSignup(e: React.FormEvent) {
     e.preventDefault();
     setUser({ name: signupForm.name || signupForm.username || "Indian Citizen", email: signupForm.email, xp: 0, level: 1, streak: 1, badges: ["🌟"], rank: 999 });
     setAuthMode(null); setSection("home");
