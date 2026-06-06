@@ -990,4 +990,9 @@ const [lang, setLang] = useState<keyof typeof LANGS>("English");
       </footer>
     </div>
   );
-}
+}<input
+  type="text"
+  placeholder="Search Articles, Rights, Duties..."
+  value={explorerQuery}
+  onChange={(e) => setExplorerQuery(e.target.value)}
+/>
