@@ -184,7 +184,10 @@ export default function Samvidhan() {
 const [lang, setLang] = useState<keyof typeof LANGS>("English");
   const [section, setSection] = useState("home");
   const [authMode, setAuthMode] = useState(null); // null | "login" | "signup"
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<{
+  name: string;
+  email: string;
+} | null>(null);
   const [quizState, setQuizState] = useState({ mode: null, idx: 0, score: 0, answered: null, done: false });
   const [aiMessages, setAiMessages] = useState([{ role: "ai", text: AI_CANNED["default"] }]);
   const [aiInput, setAiInput] = useState("");
