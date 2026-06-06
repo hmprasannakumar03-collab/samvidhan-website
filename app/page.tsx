@@ -118,7 +118,7 @@ const LANGS = {
     quizModes: ["शुरुआती","विद्यार्थी","UPSC","उन्नत","दैनिक चुनौती"],
   },
 };
-const LANG_NAMES = ["English","Hindi","Kannada","Tamil","Telugu","Marathi","Bengali","Malayalam","Gujarati","Punjabi"];
+const LANG_NAMES = Object.keys(LANGS) as Array<keyof typeof LANGS>;
 
 // ── Quiz Data ─────────────────────────────────────────────────────────────────
 const QUIZ_QUESTIONS = [
@@ -183,20 +183,43 @@ export default function Samvidhan() {
   const [dark, setDark] = useState(true);
 const [lang, setLang] = useState<keyof typeof LANGS>("English");
   const [section, setSection] = useState("home");
-  const [authMode, setAuthMode] = useState(null); // null | "login" | "signup"
-  const [user, setUser] = useState<{
-  name: string;
-  email: string;
-} | null>(null);
-  const [quizState, setQuizState] = useState({ mode: null, idx: 0, score: 0, answered: null, done: false });
-  const [aiMessages, setAiMessages] = useState([{ role: "ai", text: AI_CANNED["default"] }]);
+  const [authMode, setAuthMode] = useState<null | "login" | "signup">(null);
+  type User = {
+    name: string;
+    email: string;
+    xp: number;
+    level: number;
+    streak: number;
+    badges: string[];
+    rank: number;
+  };
+  type QuizState = {
+    mode: string | null;
+    idx: number;
+    score: number;
+    answered: number | null;
+    done: boolean;
+  };
+  type Message = { role: "ai" | "user"; text: string };
+  type FormField = "email" | "password";
+  type LoginForm = Record<FormField, string>;
+  type SignupForm = {
+    name: string;
+    username: string;
+    email: string;
+    password: string;
+    confirm: string;
+  };
+  const [user, setUser] = useState<User | null>(null);
+  const [quizState, setQuizState] = useState<QuizState>({ mode: null, idx: 0, score: 0, answered: null, done: false });
+  const [aiMessages, setAiMessages] = useState<Message[]>([{ role: "ai", text: AI_CANNED["default"] }]);
   const [aiInput, setAiInput] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
   const [explorerQuery, setExplorerQuery] = useState("");
-  const [expandedArticle, setExpandedArticle] = useState(null);
-  const [loginForm, setLoginForm] = useState({ email: "", password: "" });
-  const [signupForm, setSignupForm] = useState({ name: "", username: "", email: "", password: "", confirm: "" });
+  const [expandedArticle, setExpandedArticle] = useState<number | null>(null);
+  const [loginForm, setLoginForm] = useState<LoginForm>({ email: "", password: "" });
+  const [signupForm, setSignupForm] = useState<SignupForm>({ name: "", username: "", email: "", password: "", confirm: "" });
   const chatEndRef = useRef<HTMLDivElement | null>(null);
 
   const T = LANGS[lang];
@@ -305,7 +328,7 @@ const [lang, setLang] = useState<keyof typeof LANGS>("English");
 
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           {/* Language */}
-          <select value={lang} onChange={e => setLang(e.target.value)} style={{ background: "transparent", border: `1px solid ${border}`, color: text, borderRadius: 8, padding: "4px 8px", fontSize: 12, cursor: "pointer" }}>
+          <select value={lang} onChange={e => setLang(e.target.value as keyof typeof LANGS)} style={{ background: "transparent", border: `1px solid ${border}`, color: text, borderRadius: 8, padding: "4px 8px", fontSize: 12, cursor: "pointer" }}>
             {LANG_NAMES.map(l => <option key={l} value={l} style={{ background: d ? "#1a1a2e" : "#fff" }}>{l}</option>)}
           </select>
           {/* Dark/Light */}
@@ -341,7 +364,7 @@ const [lang, setLang] = useState<keyof typeof LANGS>("English");
                 {[["email", T.email, "text"], ["password", T.password, "password"]].map(([key, label, type]) => (
                   <div key={key} style={{ marginBottom: 16 }}>
                     <label style={{ fontSize: 12, color: muted, display: "block", marginBottom: 6 }}>{label}</label>
-                    <input type={type} value={loginForm[key]} onChange={e => setLoginForm(f => ({ ...f, [key]: e.target.value }))} required
+                    <input type={type} value={loginForm[key as FormField]} onChange={e => setLoginForm(f => ({ ...f, [key as FormField]: e.target.value }))} required
                       style={{ width: "100%", padding: "12px 16px", borderRadius: 12, border: `1px solid ${border}`, background: d ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.04)", color: text, fontSize: 14 }} />
                   </div>
                 ))}
@@ -354,7 +377,7 @@ const [lang, setLang] = useState<keyof typeof LANGS>("English");
                 {[["name", "Full Name", "text"], ["username", "Username", "text"], ["email", T.email, "email"], ["password", T.password, "password"], ["confirm", "Confirm Password", "password"]].map(([key, label, type]) => (
                   <div key={key} style={{ marginBottom: 12 }}>
                     <label style={{ fontSize: 12, color: muted, display: "block", marginBottom: 4 }}>{label}</label>
-                    <input type={type} value={signupForm[key]} onChange={e => setSignupForm(f => ({ ...f, [key]: e.target.value }))} required
+                    <input type={type} value={signupForm[key as keyof SignupForm]} onChange={e => setSignupForm(f => ({ ...f, [key as keyof SignupForm]: e.target.value }))} required
                       style={{ width: "100%", padding: "11px 14px", borderRadius: 10, border: `1px solid ${border}`, background: d ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.04)", color: text, fontSize: 14 }} />
                   </div>
                 ))}
@@ -896,7 +919,7 @@ const [lang, setLang] = useState<keyof typeof LANGS>("English");
                 const isActive = lang === l.name;
                 const isAvailable = l.status === "full";
                 return (
-                  <button key={i} className="btn card-hover" onClick={() => isAvailable && setLang(l.name)}
+                  <button key={i} className="btn card-hover" onClick={() => isAvailable && setLang(l.name as keyof typeof LANGS)}
                     style={{ ...glass, borderRadius: 18, padding: "22px 20px", display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 8,
                       border: isActive ? `2px solid ${saffron}` : `1px solid ${border}`,
                       background: isActive ? (d ? `linear-gradient(135deg,rgba(255,153,51,0.12),rgba(19,136,8,0.08))` : `rgba(255,153,51,0.08)`) : cardBg,
@@ -940,7 +963,7 @@ const [lang, setLang] = useState<keyof typeof LANGS>("English");
               <p style={{ color: muted, fontSize: 13, marginBottom: 14 }}>Quick switch — fully translated languages:</p>
               <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
                 {[{ key: "English", label: "🇬🇧 English" }, { key: "Hindi", label: "🇮🇳 हिन्दी" }].map(({ key, label }) => (
-                  <button key={key} className="btn" onClick={() => setLang(key)}
+                  <button key={key} className="btn" onClick={() => setLang(key as keyof typeof LANGS)}
                     style={{ padding: "12px 28px", borderRadius: 14, background: lang === key ? `linear-gradient(135deg,${saffron},${green})` : "transparent", border: `1px solid ${lang === key ? "transparent" : border}`, color: lang === key ? "#fff" : text, fontWeight: lang === key ? 700 : 400, fontSize: 15 }}>
                     {label}
                   </button>
@@ -993,9 +1016,4 @@ const [lang, setLang] = useState<keyof typeof LANGS>("English");
       </footer>
     </div>
   );
-}<input
-  type="text"
-  placeholder="Search Articles, Rights, Duties..."
-  value={explorerQuery}
-  onChange={(e) => setExplorerQuery(e.target.value)}
-/>
+}
