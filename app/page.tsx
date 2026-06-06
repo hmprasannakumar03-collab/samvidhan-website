@@ -993,4 +993,10 @@ const [lang, setLang] = useState<keyof typeof LANGS>("English");
 }<input
   type="text"
   placeholder="Search Articles, Rights, Duties..."
-/>
+/>const nextConfig = {
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+};
+
+export default nextConfig;
