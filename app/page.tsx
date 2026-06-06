@@ -990,6 +990,4 @@ const [lang, setLang] = useState<keyof typeof LANGS>("English");
       </footer>
     </div>
   );
-}<input
-  type="text"
-  placeholder="Search Articles, Rights, Duties..."
+}
