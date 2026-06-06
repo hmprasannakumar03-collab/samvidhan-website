@@ -151,7 +151,7 @@ const AI_CANNED = {
   "default": "I'm your **SAMVIDHAN AI Assistant**! I can explain any Article of the Constitution, Fundamental Rights, constitutional history, and more. Try asking:\n- 'Explain Article 21'\n- 'What are Fundamental Duties?'\n- 'Tell me about the Preamble'\n- 'Who is Dr. Ambedkar?'"
 };
 
-function getAIResponse(msg) {
+function getAIResponse(msg: string) {
   const lower = msg.toLowerCase();
   if (lower.includes("article 21") || lower.includes("life") || lower.includes("liberty")) return AI_CANNED["article 21"];
   if (lower.includes("right") || lower.includes("fundamental")) return AI_CANNED["rights"];
